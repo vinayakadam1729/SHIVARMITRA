@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>बिल / पावती - #{{ order.order_number }} | शिवार कृषी बाजार</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="icon" type="image/jpeg" href="/static/images/logo.jpg">
+
+  <style>
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0;
+        padding: 0;
+      }
+      .invoice-container {
+        box-shadow: none !important;
+        border: 1px solid #e2e8f0 !important;
+        margin: 0 auto !important;
+        padding: 24px !important;
+        max-width: 100% !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 font-sans antialiased text-slate-800 py-6 min-h-screen">
+
+  <!-- Top Action Bar (hidden when printing) -->
+  <div class="max-w-3xl mx-auto px-4 mb-6 no-print">
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center space-x-2">
+        <a href="javascript:history.back()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl flex items-center gap-1.5 transition">
+          <i class="fas fa-arrow-left"></i> मागे जा
+        </a>
+        <span class="text-xs font-bold text-slate-500">ऑर्डर #{{ order.order_number }}</span>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <!-- Print Button -->
+        <button onclick="window.print()" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-sm transition">
+          <i class="fas fa-print"></i> बिल प्रिंट करा / PDF सेव्ह करा
+        </button>
+
+        <!-- Send Bill via WhatsApp -->
+        <a id="wa-bill-btn" href="#" target="_blank" class="px-4 py-2 bg-[#25D366] hover:bg-[#20ba59] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-sm transition">
+          <i class="fab fa-whatsapp text-sm"></i> शेतकऱ्याला WhatsApp वर बिल पाठवा
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Printable Invoice Document -->
+  <div class="max-w-3xl mx-auto bg-white rounded-3xl p-8 sm:p-12 shadow-xl border border-slate-200 invoice-container">
+    
+    <!-- Invoice Header -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b-2 border-emerald-800">
+      
+      <div class="flex items-center space-x-4">
+        <div class="w-16 h-16 rounded-2xl bg-white p-1 border border-emerald-200 shadow-sm flex items-center justify-center">
+          <img src="/static/images/logo.jpg" alt="Shivar Logo" class="w-14 h-14 object-contain rounded-xl">
+        </div>
+        <div>
+          <h1 class="text-2xl font-black text-emerald-950 tracking-tight">{{ owner_name }}</h1>
+          <div class="text-xs font-bold text-emerald-700 uppercase tracking-wider">शिवार कृषी बाजार • Farmer Trust</div>
+          <div class="text-xs text-slate-500 mt-0.5"><i class="fas fa-map-marker-alt text-emerald-600 mr-1"></i> {{ store_location }}</div>
+          <div class="text-xs text-slate-700 font-bold"><i class="fas fa-phone-alt text-emerald-600 mr-1"></i> मो. क्र: {{ owner_phone }}</div>
+        </div>
+      </div>
+
+      <div class="text-left sm:text-right">
+        <div class="inline-block px-3 py-1 bg-emerald-100 text-emerald-900 font-black text-xs rounded-lg uppercase tracking-wider mb-1">
+          कृषी साहित्य पावती / Bill
+        </div>
+        <div class="font-mono font-black text-base text-slate-900">#{{ order.order_number }}</div>
+        <div class="text-xs text-slate-500">तारीख: {{ order.created_at.strftime("%d/%m/%Y %I:%M %p") }}</div>
+      </div>
+
+    </div>
+
+    <!-- Farmer & Order Info Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 py-6 border-b border-slate-200 text-xs">
+      
+      <!-- Billed To -->
+      <div class="space-y-1">
+        <div class="font-black text-emerald-900 uppercase tracking-wider mb-1">ग्राहकाचे / शेतकऱ्याचे नाव:</div>
+        <div class="font-bold text-slate-900 text-sm">{{ order.customer_name }}</div>
+        <div class="font-mono text-slate-700"><i class="fas fa-phone mr-1 text-emerald-600"></i> +91 {{ order.customer_phone }}</div>
+        <div class="text-slate-600 leading-relaxed pt-1">
+          {{ order.address_line }}, {{ order.village }}, ता. {{ order.taluka }}, जि. {{ order.district }} - {{ order.pincode }}
+        </div>
+      </div>
+
+      <!-- Payment & Delivery Info -->
+      <div class="space-y-1 sm:text-right">
+        <div class="font-black text-emerald-900 uppercase tracking-wider mb-1">ऑर्डर व पेमेंट तपशील:</div>
+        <div>पेमेंट पद्धत: <span class="font-bold text-slate-900">{{ order.payment_method }}</span></div>
+        <div>
+          पेमेंट स्थिती: 
+          <span class="inline-block px-2 py-0.5 rounded text-[11px] font-bold {% if order.payment_status == 'PAID' %}bg-emerald-100 text-emerald-800{% else %}bg-amber-100 text-amber-800{% endif %}">
+            {{ order.payment_status }}
+          </span>
+        </div>
+        <div>
+          डिलिव्हरी स्थिती: 
+          <span class="font-bold text-emerald-800">{{ order.order_status }}</span>
+        </div>
+        {% if order.delivery_notes %}
+        <div class="text-slate-500 pt-1">सूचना: {{ order.delivery_notes }}</div>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <!-- Items Table -->
+    <div class="py-6">
+      <table class="w-full text-left text-xs border-collapse">
+        <thead>
+          <tr class="bg-emerald-50 text-emerald-950 font-black uppercase text-[11px] border-y border-emerald-200">
+            <th class="py-3 px-3">अ.क्र.</th>
+            <th class="py-3 px-3">साहित्याचे नाव (Product)</th>
+            <th class="py-3 px-3 text-center">प्रमाण (Qty)</th>
+            <th class="py-3 px-3 text-right">दर (Rate)</th>
+            <th class="py-3 px-3 text-right">रक्कम (Subtotal)</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          {% for item in order.items %}
+          <tr class="hover:bg-slate-50">
+            <td class="py-3 px-3 text-slate-500">{{ loop.index }}</td>
+            <td class="py-3 px-3 font-bold text-slate-900">
+              {{ item.product_name }}
+              <span class="block text-[10px] text-slate-400 font-normal">प्रमाणित कृषी उत्पादन</span>
+            </td>
+            <td class="py-3 px-3 text-center font-bold">{{ item.quantity }} {{ item.unit }}</td>
+            <td class="py-3 px-3 text-right font-medium">₹{{ item.price }}</td>
+            <td class="py-3 px-3 text-right font-black text-slate-900">₹{{ item.subtotal }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Calculations Summary -->
+    <div class="pt-4 border-t-2 border-slate-200 flex justify-end">
+      <div class="w-full sm:w-72 space-y-2 text-xs">
+        <div class="flex justify-between text-slate-600">
+          <span>साहित्य उपएकूण:</span>
+          <span class="font-bold text-slate-800">₹{{ order.total_amount }}</span>
+        </div>
+        <div class="flex justify-between text-slate-600">
+          <span>डिलिव्हरी शुल्क:</span>
+          <span class="font-bold text-emerald-700">{% if order.delivery_fee == 0 %}मोफत (Free){% else %}₹{{ order.delivery_fee }}{% endif %}</span>
+        </div>
+        <div class="flex justify-between items-baseline pt-2 border-t border-slate-300 text-sm font-black text-emerald-950">
+          <span>एकूण देय रक्कम (Total):</span>
+          <span class="text-xl font-black text-emerald-800">₹{{ order.grand_total }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer & Seal / Signature -->
+    <div class="pt-12 mt-8 border-t border-dashed border-slate-300 grid grid-cols-1 sm:grid-cols-2 gap-6 items-end text-xs text-slate-500">
+      
+      <div class="space-y-1">
+        <div class="font-bold text-emerald-900">नियम व अटी:</div>
+        <div>• खरेदी केलेले बियाणे, खते व औषधे सीलबंद व कंपनी प्रमाणित आहेत.</div>
+        <div>• काही अडचण असल्यास {{ owner_phone }} वर संपर्क साधावा.</div>
+        <div class="font-semibold text-emerald-800 pt-1">शेतकऱ्यांची प्रगती, आमचा ध्यास! 🙏</div>
+      </div>
+
+      <div class="text-left sm:text-right space-y-8">
+        <div class="inline-block border-2 border-dashed border-emerald-300 px-4 py-2 rounded-xl text-center">
+          <div class="text-[10px] text-emerald-800 font-bold uppercase">शिवार कृषी सेवा केंद्र</div>
+          <div class="text-xs font-black text-emerald-950">अधिकृत स्वाक्षरी / शिक्का</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const custPhone = "{{ order.customer_phone }}";
+      const orderNum = "{{ order.order_number }}";
+      const custName = "{{ order.customer_name }}";
+      const grandTotal = "{{ order.grand_total }}";
+      
+      const billUrl = window.location.href;
+      
+      let itemsList = "";
+      {% for item in order.items %}
+      itemsList += "• {{ item.product_name }} x {{ item.quantity }} {{ item.unit }} = ₹{{ item.subtotal }}\n";
+      {% endfor %}
+
+      const waMsg = encodeURIComponent(
+        `🌾 *शिवार कृषी सेवा केंद्र - खरेदी बिल* 🌾\n\n` +
+        `नमस्कार *${custName}* जी,\n` +
+        `आपली ऑर्डर *#${orderNum}* यशस्वीरित्या डिलिव्हर झाली आहे. आपले बिल खालीलप्रमाणे:\n\n` +
+        `📦 *खरेदी साहित्य:*\n${itemsList}\n` +
+        `💰 *एकूण देय रक्कम:* ₹${grandTotal}\n\n` +
+        `📄 *ऑनलाईन बिल पाहण्यासाठी लिंक:*\n${billUrl}\n\n` +
+        `शिवार कृषी केंद्र निवडल्याबद्दल मनापासून धन्यवाद! पुन्हा सेवेची संधी द्यावी.`
+      );
+
+      const waBtn = document.getElementById("wa-bill-btn");
+      if (waBtn) {
+        waBtn.href = `https://wa.me/91${custPhone}?text=${waMsg}`;
+      }
+    });
+  </script>
+</body>
+</html>

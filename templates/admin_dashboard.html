@@ -1,0 +1,457 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<script src="/static/js/admin.js"></script>
+<script>
+function toggleDashboardPassword(inputId, btnElement) {
+  const input = document.getElementById(inputId);
+  const icon = btnElement.querySelector('i');
+  if (input.type === "password") {
+    input.type = "text";
+    icon.classList.remove("fa-eye");
+    icon.classList.add("fa-eye-slash");
+  } else {
+    input.type = "password";
+    icon.classList.remove("fa-eye-slash");
+    icon.classList.add("fa-eye");
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="py-8 bg-slate-100 min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    
+    <!-- Top Dashboard Header -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="flex items-center space-x-4">
+        <div class="w-16 h-16 rounded-2xl bg-white p-1.5 border border-emerald-100 shadow-md flex items-center justify-center">
+          <img src="/static/images/logo.jpg" alt="Shivar Logo" class="w-13 h-13 object-contain rounded-xl">
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-2xl font-black text-slate-900" id="admin-user-name">Shivar Krushi Seva Kendra</h1>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">Owner Access</span>
+          </div>
+          <p class="text-xs text-slate-500 mt-0.5">ऑर्डर व्यवस्थापन, इन्व्हेंटरी कंट्रोल आणि ग्राहक चॅट</p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+        <button onclick="AdminApp.openOfflineSaleModal()" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-sm transition">
+          <i class="fas fa-cash-register"></i>
+          <span>ऑफलाईन विक्री जोडा (Add Sale)</span>
+        </button>
+        <button onclick="AdminApp.openAddProductModal()" class="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-sm transition">
+          <i class="fas fa-plus"></i>
+          <span>नवीन उत्पादन जोडा</span>
+        </button>
+        <button id="admin-logout-btn" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs flex items-center gap-2 transition">
+          <i class="fas fa-sign-out-alt text-red-500"></i>
+          <span>लॉगआउट</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Low Stock Alert Banner -->
+    <div id="low-stock-alert-box" class="hidden p-4 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-between">
+      <div class="flex items-center space-x-3 text-red-900">
+        <i class="fas fa-exclamation-triangle text-xl text-red-600"></i>
+        <div>
+          <span class="font-bold text-sm">इन्व्हेंटरी सूचना:</span>
+          <span class="text-xs text-red-800 ml-1"><span id="low-stock-count" class="font-bold">0</span> उत्पादनांचा साठा कमी झाला आहे.</span>
+        </div>
+      </div>
+      <button onclick="AdminApp.switchTab('products')" class="text-xs font-bold text-red-700 hover:underline">
+        उत्पादने पहा →
+      </button>
+    </div>
+
+    <!-- Analytics Stats Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
+        <div>
+          <div class="text-xs font-bold uppercase text-slate-400">आजची कमाई (Today's Revenue)</div>
+          <div class="text-2xl font-black text-slate-900 mt-1" id="stat-revenue">₹0</div>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl">
+          <i class="fas fa-wallet"></i>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
+        <div>
+          <div class="text-xs font-bold uppercase text-slate-400">आजच्या ऑर्डर्स (Today's Orders)</div>
+          <div class="text-2xl font-black text-slate-900 mt-1" id="stat-orders">0</div>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl">
+          <i class="fas fa-boxes-stacked"></i>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
+        <div>
+          <div class="text-xs font-bold uppercase text-slate-400">प्रलंबित ऑर्डर्स</div>
+          <div class="text-2xl font-black text-amber-600 mt-1" id="stat-pending">0</div>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-xl">
+          <i class="fas fa-hourglass-half"></i>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
+        <div>
+          <div class="text-xs font-bold uppercase text-slate-400">सक्रिय उत्पादने</div>
+          <div class="text-2xl font-black text-slate-900 mt-1" id="stat-products">0</div>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center text-xl">
+          <i class="fas fa-tags"></i>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex items-center space-x-2 border-b border-slate-200 pb-2">
+      <button class="admin-tab-btn px-5 py-2.5 rounded-xl font-bold text-xs bg-emerald-700 text-white transition flex items-center gap-2" data-tab="orders">
+        <i class="fas fa-shopping-cart"></i>
+        <span>ग्राहक ऑर्डर्स (Orders)</span>
+      </button>
+      <button class="admin-tab-btn px-5 py-2.5 rounded-xl font-bold text-xs text-gray-600 hover:bg-gray-100 transition flex items-center gap-2" data-tab="products">
+        <i class="fas fa-seedling"></i>
+        <span>उत्पादन सूची व इन्व्हेंटरी (Products)</span>
+      </button>
+      <button class="admin-tab-btn px-5 py-2.5 rounded-xl font-bold text-xs text-gray-600 hover:bg-gray-100 transition flex items-center gap-2" data-tab="settings">
+        <i class="fas fa-user-cog"></i>
+        <span>खाते व पासवर्ड सेटिंग्ज (Admin Settings)</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: ORDERS PANE -->
+    <div id="tab-orders" class="admin-tab-pane space-y-4">
+      
+      <!-- Orders Filter Bar -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <select id="admin-order-status-filter" onchange="AdminApp.loadOrders(this.value, document.getElementById('admin-order-search').value)" class="py-2 px-3 rounded-xl border border-slate-300 text-xs font-semibold focus:outline-none">
+            <option value="all">सर्व ऑर्डर्स (All Status)</option>
+            <option value="Pending">⏳ Pending (प्रलंबित)</option>
+            <option value="Confirmed">✔️ Confirmed (स्वीकृत)</option>
+            <option value="Shipped">🚚 Shipped (मार्गावर)</option>
+            <option value="Delivered">🌾 Delivered (पोहोचले)</option>
+            <option value="Cancelled">❌ Cancelled (रद्द)</option>
+          </select>
+
+          <div class="relative w-64">
+            <input type="text" id="admin-order-search" oninput="AdminApp.loadOrders(document.getElementById('admin-order-status-filter').value, this.value)" placeholder="नाव, फोन, किंवा ऑर्डर क्र. शोधा..." class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none">
+            <i class="fas fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+          </div>
+        </div>
+
+        <button onclick="AdminApp.exportCSV()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs flex items-center gap-1.5 transition">
+          <i class="fas fa-file-csv text-emerald-700"></i>
+          <span>Excel / CSV डाउनलोड</span>
+        </button>
+      </div>
+
+      <!-- Orders Table -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 border-b text-[11px] font-black uppercase text-slate-500 tracking-wider">
+                <th class="px-4 py-3">ऑर्डर क्र.</th>
+                <th class="px-4 py-3">तारीख</th>
+                <th class="px-4 py-3">शेतकरी नाव व पत्ता</th>
+                <th class="px-4 py-3">साहित्य</th>
+                <th class="px-4 py-3">रक्कम</th>
+                <th class="px-4 py-3">स्थिती अपडेट</th>
+                <th class="px-4 py-3 text-right">कृती</th>
+              </tr>
+            </thead>
+            <tbody id="orders-table-body">
+              <!-- Injected via JavaScript loadOrders -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 2: PRODUCTS PANE -->
+    <div id="tab-products" class="admin-tab-pane hidden space-y-4">
+      
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex items-center justify-between">
+        <h3 class="font-bold text-sm text-slate-800">सर्व कृषी उत्पादने व स्टॉक स्थिती</h3>
+        <button onclick="AdminApp.openAddProductModal()" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 transition">
+          <i class="fas fa-plus"></i>
+          <span>नवीन उत्पादन जोडा</span>
+        </button>
+      </div>
+
+      <!-- Products Table -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 border-b text-[11px] font-black uppercase text-slate-500 tracking-wider">
+                <th class="px-4 py-3">उत्पादन नाव</th>
+                <th class="px-4 py-3">कॅटेगरी</th>
+                <th class="px-4 py-3">किंमत</th>
+                <th class="px-4 py-3">स्टॉक प्रमाण</th>
+                <th class="px-4 py-3">स्थिती</th>
+                <th class="px-4 py-3 text-right">कृती</th>
+              </tr>
+            </thead>
+            <tbody id="products-table-body">
+              <!-- Injected via JavaScript loadProducts -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 3: SETTINGS PANE -->
+    <div id="tab-settings" class="admin-tab-pane hidden space-y-6">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Change Name & Email Box -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center space-x-3 pb-3 border-b">
+            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+              <i class="fas fa-user-edit text-lg"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 text-sm">नाव व ईमेल (Username) बदला</h3>
+              <p class="text-xs text-slate-500">तुमचा लॉगिन ईमेल आणि स्टोअर मालकाचे नाव अपडेट करा</p>
+            </div>
+          </div>
+
+          <form id="admin-profile-form" onsubmit="AdminApp.updateProfile(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">दुकान / मालकाचे नाव (Store Owner Name)</label>
+              <input type="text" id="setting-fullname" required value="Shivar Krushi Seva Kendra" class="w-full px-3.5 py-2.5 rounded-xl border text-xs font-semibold focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">लॉगिन ईमेल / युझरनेम (Email / Username)</label>
+              <input type="text" id="setting-email" required value="admin@shivar.com" class="w-full px-3.5 py-2.5 rounded-xl border text-xs font-semibold focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+            </div>
+
+            <button type="submit" id="admin-profile-save-btn" class="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl text-xs transition shadow flex items-center justify-center gap-1.5">
+              <i class="fas fa-save"></i>
+              <span>माहिती सेव्ह करा (Save Info)</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Change Password Box -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center space-x-3 pb-3 border-b">
+            <div class="w-10 h-10 rounded-xl bg-yellow-100 text-yellow-800 flex items-center justify-center font-bold">
+              <i class="fas fa-lock text-lg"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 text-sm">पासवर्ड बदला (Change Password)</h3>
+              <p class="text-xs text-slate-500">सुरक्षिततेसाठी नवीन मजबूत पासवर्ड सेट करा</p>
+            </div>
+          </div>
+
+          <form id="admin-pwd-form" onsubmit="AdminApp.changePassword(event)" class="space-y-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">सध्याचा पासवर्ड (Current Password)</label>
+              <div class="relative">
+                <input type="password" id="setting-curr-pwd" required placeholder="सध्याचा पासवर्ड टाका" class="w-full pl-3.5 pr-10 py-2.5 rounded-xl border text-xs font-semibold focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+                <button type="button" onclick="toggleDashboardPassword('setting-curr-pwd', this)" class="absolute right-3 top-3 text-slate-400 hover:text-emerald-700 focus:outline-none transition">
+                  <i class="fas fa-eye text-xs"></i>
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">नवीन पासवर्ड (New Password)</label>
+              <div class="relative">
+                <input type="password" id="setting-new-pwd" required placeholder="किमान ४ अक्षरी नवीन पासवर्ड" class="w-full pl-3.5 pr-10 py-2.5 rounded-xl border text-xs font-semibold focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+                <button type="button" onclick="toggleDashboardPassword('setting-new-pwd', this)" class="absolute right-3 top-3 text-slate-400 hover:text-emerald-700 focus:outline-none transition">
+                  <i class="fas fa-eye text-xs"></i>
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">नवीन पासवर्डची पुष्टी करा (Confirm New Password)</label>
+              <div class="relative">
+                <input type="password" id="setting-confirm-pwd" required placeholder="नवीन पासवर्ड पुन्हा टाका" class="w-full pl-3.5 pr-10 py-2.5 rounded-xl border text-xs font-semibold focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+                <button type="button" onclick="toggleDashboardPassword('setting-confirm-pwd', this)" class="absolute right-3 top-3 text-slate-400 hover:text-emerald-700 focus:outline-none transition">
+                  <i class="fas fa-eye text-xs"></i>
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" id="admin-pwd-save-btn" class="w-full py-2.5 bg-yellow-500 hover:bg-yellow-600 text-emerald-950 font-black rounded-xl text-xs transition shadow flex items-center justify-center gap-1.5">
+              <i class="fas fa-key"></i>
+              <span>नवीन पासवर्ड सेट करा (Update Password)</span>
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+
+
+  </div>
+</div>
+
+<!-- Modal: Add / Edit Product -->
+<div id="product-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200">
+    
+    <div class="p-6 border-b flex items-center justify-between sticky top-0 bg-white z-10">
+      <h3 id="product-modal-title" class="font-black text-lg text-slate-900">नवीन उत्पादन जोडा</h3>
+      <button onclick="AdminApp.closeProductModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <form id="product-form" onsubmit="AdminApp.saveProduct(event)" class="p-6 space-y-4">
+      <input type="hidden" id="product-form-id">
+
+      <!-- Trilingual Names -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">नाव (मराठी) *</label>
+          <input type="text" id="p-name-mr" required placeholder="उदा. महाबीज सोयाबीन" class="w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-emerald-600 focus:outline-none font-semibold">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">नाम (हिंदी) *</label>
+          <input type="text" id="p-name-hi" required placeholder="उदा. महाबीज सोयाबीन" class="w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-emerald-600 focus:outline-none font-semibold">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Name (English) *</label>
+          <input type="text" id="p-name-en" required placeholder="e.g. Mahabeej Soybean" class="w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-emerald-600 focus:outline-none font-semibold">
+        </div>
+      </div>
+
+      <!-- Trilingual Descriptions -->
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">माहिती (मराठी) *</label>
+          <textarea id="p-desc-mr" required rows="2" placeholder="उत्पादनाचा वापर, पिकांचे फायदे..." class="w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-emerald-600 focus:outline-none"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">विवरण (हिंदी) *</label>
+          <textarea id="p-desc-hi" required rows="2" placeholder="फसल के लिए फायदे और उपयोग..." class="w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-emerald-600 focus:outline-none"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Description (English) *</label>
+          <textarea id="p-desc-en" required rows="2" placeholder="Product details and usage..." class="w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-emerald-600 focus:outline-none"></textarea>
+        </div>
+      </div>
+
+      <!-- Category & Pricing -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">कॅटेगरी *</label>
+          <select id="p-category" required class="w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-emerald-600 focus:outline-none font-semibold">
+            <option value="1">बियाणे (Seeds)</option>
+            <option value="2">खते (Fertilizers)</option>
+            <option value="3">कीटकनाशके (Crop Protection)</option>
+            <option value="4">कृषी अवजारे (Equipment)</option>
+            <option value="5">सिंचन साधने (Irrigation)</option>
+            <option value="6">सेंद्रिय शेती (Organic)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">विक्री किंमत (₹) *</label>
+          <input type="number" step="0.5" id="p-price" required placeholder="850" class="w-full p-2.5 rounded-xl border text-xs font-bold focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">मूळ किंमत (MRP ₹)</label>
+          <input type="number" step="0.5" id="p-original-price" placeholder="950" class="w-full p-2.5 rounded-xl border text-xs font-bold focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+        </div>
+      </div>
+
+      <!-- Units (Trilingual) & Stock -->
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">एकक (मराठी)</label>
+          <input type="text" id="p-unit-mr" value="१ नग" class="w-full p-2.5 rounded-xl border text-xs">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">इकाई (हिंदी)</label>
+          <input type="text" id="p-unit-hi" value="१ नग" class="w-full p-2.5 rounded-xl border text-xs">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Unit (English)</label>
+          <input type="text" id="p-unit-en" value="1 unit" class="w-full p-2.5 rounded-xl border text-xs">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">शिल्लक स्टॉक *</label>
+          <input type="number" id="p-stock" required value="50" class="w-full p-2.5 rounded-xl border text-xs font-bold">
+        </div>
+      </div>
+
+      <!-- Image URL & Badge -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="sm:col-span-2">
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">फोटो URL (Image Link) *</label>
+          <input type="url" id="p-image" required placeholder="https://images.unsplash.com/..." class="w-full p-2.5 rounded-xl border text-xs">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">बॅज (उदा. Top Seller)</label>
+          <input type="text" id="p-badge" placeholder="Best Seller" class="w-full p-2.5 rounded-xl border text-xs">
+        </div>
+      </div>
+
+      <!-- Status Checkbox -->
+      <div class="flex items-center space-x-2 pt-2">
+        <input type="checkbox" id="p-in-stock" checked class="w-4 h-4 text-emerald-600 rounded">
+        <label for="p-in-stock" class="text-xs font-bold text-slate-800">स्टॉक विक्रीसाठी सक्रिय ठेवा (In Stock)</label>
+      </div>
+
+      <!-- Submit Buttons -->
+      <div class="pt-4 border-t flex justify-end space-x-2">
+        <button type="button" onclick="AdminApp.closeProductModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700">रद्द करा</button>
+        <button type="submit" class="px-6 py-2 rounded-xl text-xs font-bold bg-emerald-700 hover:bg-emerald-800 text-white shadow-md">सेव्ह करा (Save Product)</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Offline Sale -->
+<div id="offline-sale-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-sm w-full shadow-2xl border border-slate-200">
+    <div class="p-5 border-b flex items-center justify-between">
+      <h3 class="font-black text-lg text-slate-900"><i class="fas fa-cash-register text-blue-600 mr-2"></i>ऑफलाईन विक्री</h3>
+      <button onclick="AdminApp.closeOfflineSaleModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <form id="offline-sale-form" onsubmit="AdminApp.submitOfflineSale(event)" class="p-5 space-y-4">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">ग्राहकाचे नाव (पर्यायी)</label>
+        <input type="text" id="offline-customer-name" placeholder="उदा. रामराव पाटील" class="w-full px-3.5 py-2.5 rounded-xl border text-sm font-semibold focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">एकूण रक्कम (Total Amount) *</label>
+        <div class="relative">
+          <span class="absolute left-3.5 top-2.5 font-bold text-slate-400">₹</span>
+          <input type="number" id="offline-amount" required min="1" placeholder="0.00" class="w-full pl-8 pr-3.5 py-2.5 rounded-xl border text-lg font-black focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+        </div>
+      </div>
+      <div class="pt-4 border-t flex justify-end space-x-2">
+        <button type="button" onclick="AdminApp.closeOfflineSaleModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700">रद्द करा</button>
+        <button type="submit" class="px-6 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-md">विक्री जोडा</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,346 @@
+/**
+ * Shivar (शिवार) Multilingual Translations
+ * Languages: Marathi (mr), Hindi (hi), English (en)
+ */
+
+const translations = {
+  mr: {
+    brand_name: "शिवार कृषी बाजार",
+    tagline: "शेतकऱ्यांचा विश्वासू ऑनलाईन कृषी बाजारपेठ",
+    home: "मुख्यपृष्ठ",
+    products: "सर्व उत्पादने",
+    categories: "कॅटेगरी",
+    track_order: "ऑर्डर ट्रॅक करा",
+    admin_login: "मालक लॉगिन",
+    admin_dashboard: "अ‍ॅडमिन पॅनेल",
+    cart: "खरेदी टोपली",
+    call_owner: "थेट कॉल करा",
+    whatsapp_owner: "व्हॉट्सअ‍ॅपवर संपर्क",
+    search_placeholder: "बियाणे, खते, कीटकनाशके किंवा अवजारे शोधा...",
+    all_categories: "सर्व कॅटेगरी",
+    seeds: "बियाणे",
+    fertilizers: "खते",
+    pesticides: "कीटकनाशके",
+    equipment: "अवजारे आणि यंत्रे",
+    irrigation: "सिंचन साधने",
+    organic: "सेंद्रिय शेती",
+    hero_title: "उत्कृष्ट दर्जाचे बियाणे व खते थेट तुमच्या शेतावर!",
+    hero_subtitle: "शिवार कृषी केंद्रातून दर्जेदार उत्पादने घरपोच मिळवा. थेट मालकाशी संपर्क साधा किंवा ऑनलाईन ऑर्डर करा.",
+    order_now: "आता खरेदी करा",
+    add_to_cart: "टोपलीत टाका",
+    view_details: "सविस्तर माहिती",
+    popular_products: "लोकप्रिय कृषी उत्पादने",
+    special_offers: "खास सवलती आणि ऑफर",
+    why_choose_us: "शिवार का निवडावे?",
+    feature_1_title: "१००% अस्सल उत्पादने",
+    feature_1_desc: "कंपनी प्रमाणित बियाणे, खते व औषधे.",
+    feature_2_title: "जलद गावपोच डिलिव्हरी",
+    feature_2_desc: "थेट तुमच्या गावापर्यंत/शेतावर सुरक्षित वाहतूक.",
+    feature_3_title: "थेट शेतकरी सल्ला व मदत",
+    feature_3_desc: "तज्ज्ञ मालकाशी ९०२१२७३००२ वर थेट चर्चा करा.",
+    feature_4_title: "कॅश ऑन डिलिव्हरी (COD)",
+    feature_4_desc: "माल मिळाल्यावर खात्री करूनच पैसे द्या.",
+    price: "किंमत",
+    in_stock: "उपलब्ध आहे",
+    out_of_stock: "सध्या संपले आहे",
+    stock_left: "शिल्लक नग",
+    quantity: "प्रमाण (नग)",
+    total: "एकूण रक्कम",
+    subtotal: "उपएकूण",
+    delivery_fee: "डिलिव्हरी शुल्क",
+    free_delivery: "मोफत डिलिव्हरी (₹१००० वरील खरेदीवर)",
+    grand_total: "एकूण देय रक्कम",
+    checkout: "ऑर्डर पूर्ण करा",
+    farmer_details: "शेतकऱ्याची माहिती",
+    full_name: "पूर्ण नाव",
+    full_name_placeholder: "उदा. रमेश ज्ञानोबा पाटील",
+    phone_number: "मोबाईल / व्हॉट्सअ‍ॅप नंबर",
+    phone_placeholder: "१० अंकी मोबाईल नंबर",
+    email_optional: "ईमेल (पर्यायी)",
+    address: "घर / शेताचा पत्ता",
+    address_placeholder: "घर नं, गल्ली किंवा मळ्याचा पत्ता",
+    village: "गाव / शहर",
+    village_placeholder: "तुमच्या गावाचे नाव",
+    taluka: "तालुका",
+    taluka_placeholder: "तालुका",
+    district: "जिल्हा",
+    district_placeholder: "जिल्हा",
+    pincode: "पिनकोड",
+    delivery_notes: "डिलिव्हरीसाठी विशेष सूचना",
+    delivery_notes_placeholder: "उदा. सकाळी १० ते २ दरम्यान आणणे",
+    payment_method: "पेमेंट पद्धत निवडा",
+    cod_label: "कॅश ऑन डिलिव्हरी (COD - माल आल्यावर रोख)",
+    upi_label: "फोनपे / गुगल पे / UPI QR स्कॅन (झटपट पेमेंट)",
+    place_order_btn: "ऑर्डर निश्चित करा व व्हॉट्सअ‍ॅपवर पाठवा",
+    order_success_title: "अभिनंदन! तुमची ऑर्डर नोंदवली गेली आहे",
+    order_success_subtitle: "तुमच्या ऑर्डरची संपूर्ण माहिती दुकान मालकाला थेट व्हॉट्सअ‍ॅपवर पाठवली जात आहे...",
+    redirecting_whatsapp: "काही क्षणांत व्हॉट्सअ‍ॅप उघडत आहे...",
+    click_if_not_redirected: "व्हॉट्सअ‍ॅप आपोआप न उघडल्यास येथे क्लिक करा",
+    order_number: "ऑर्डर क्रमांक",
+    print_receipt: "पावती सेव्ह / प्रिंट करा",
+    track_your_order: "ऑर्डर स्थिती तपासा",
+    order_status: "ऑर्डर स्थिती",
+    status_pending: "प्रलंबित (Pending)",
+    status_confirmed: "स्वीकृत (Confirmed)",
+    status_shipped: "मार्गावर (Shipped)",
+    status_delivered: "पोहोचले (Delivered)",
+    status_cancelled: "रद्द (Cancelled)",
+    filter_by: "फिल्टर करा",
+    sort_by: "क्रमवारी",
+    sort_popular: "सर्वात लोकप्रिय",
+    sort_low_high: "किंमत: कमी ते जास्त",
+    sort_high_low: "किंमत: जास्त ते कमी",
+    sort_rating: "उत्कृष्ट रेटिंग",
+    empty_cart: "तुमची खरेदी टोपली रिकामी आहे",
+    start_shopping: "खरेदी सुरू करा",
+    contact_owner_banner: "काही अडचण किंवा प्रश्न असल्यास मालकांशी त्वरित संपर्क करा:",
+    owner_name_label: "शिवार कृषी सेवा केंद्र (मालक)",
+    footer_text: "© २०२६ शिवार अ‍ॅग्रो मार्ट. सर्व हक्क राखीव. शेतकऱ्यांची प्रगती, आमचा ध्यास.",
+    scan_to_pay: "स्कॅन करून पेमेंट करा",
+    upi_instructions: "कोणत्याही UPI अ‍ॅपवरून (PhonePe/GPay/Paytm) हा QR स्कॅन करा."
+  },
+
+  hi: {
+    brand_name: "शिवार कृषि बाजार",
+    tagline: "किसानों का विश्वसनीय ऑनलाइन कृषि बाज़ार",
+    home: "होम",
+    products: "सभी उत्पाद",
+    categories: "श्रेणियां",
+    track_order: "ऑर्डर ट्रैक करें",
+    admin_login: "मालिक लॉगिन",
+    admin_dashboard: "एडमिन पैनल",
+    cart: "शॉपिंग कार्ट",
+    call_owner: "सीधा कॉल करें",
+    whatsapp_owner: "व्हाट्सएप पर संपर्क",
+    search_placeholder: "बीज, उर्वरक, कीटनाशक या औजार खोजें...",
+    all_categories: "सभी श्रेणियां",
+    seeds: "बीज",
+    fertilizers: "उर्वरक",
+    pesticides: "कीटनाशक",
+    equipment: "उपकरण एवं औजार",
+    irrigation: "सिंचाई उपकरण",
+    organic: "जैविक खेती",
+    hero_title: "सर्वोत्तम गुणवत्ता वाले बीज और खाद सीधे आपके खेत पर!",
+    hero_subtitle: "शिवार कृषि केंद्र से प्रमाणित उत्पाद घर बैठे मंगाएं। सीधे मालिक से संपर्क करें या ऑनलाइन ऑर्डर करें।",
+    order_now: "अभी खरीदें",
+    add_to_cart: "कार्ट में जोड़ें",
+    view_details: "विवरण देखें",
+    popular_products: "लोकप्रिय कृषि उत्पाद",
+    special_offers: "विशेष छूट एवं ऑफ़र",
+    why_choose_us: "शिवार क्यों चुनें?",
+    feature_1_title: "१००% असली उत्पाद",
+    feature_1_desc: "कंपनी प्रमाणित बीज, खाद एवं कृषि दवाइयां।",
+    feature_2_title: "तेज़ ग्रामीण डिलीवरी",
+    feature_2_desc: "सीधे आपके गांव या खेत तक सुरक्षित डिलीवरी।",
+    feature_3_title: "सीधी किसान सलाह एवं सहायता",
+    feature_3_desc: "दुकान मालिक से ९०२१२७३००२ पर सीधे बात करें।",
+    feature_4_title: "कैश ऑन डिलीवरी (COD)",
+    feature_4_desc: "सामान मिलने के बाद ही भुगतान करें।",
+    price: "मूल्य",
+    in_stock: "उपलब्ध है",
+    out_of_stock: "स्टॉक में नहीं है",
+    stock_left: "शेष मात्रा",
+    quantity: "मात्रा",
+    total: "कुल राशि",
+    subtotal: "उप-कुल",
+    delivery_fee: "डिलीवरी शुल्क",
+    free_delivery: "मुफ़्त डिलीवरी (₹१००० से अधिक पर)",
+    grand_total: "कुल देय राशि",
+    checkout: "ऑर्डर पूरा करें",
+    farmer_details: "किसान का विवरण",
+    full_name: "पूरा नाम",
+    full_name_placeholder: "उदा. रमेश ज्ञानोबा पाटिल",
+    phone_number: "मोबाइल / व्हाट्सएप नंबर",
+    phone_placeholder: "१० अंकों का मोबाइल नंबर",
+    email_optional: "ईमेल (वैकल्पिक)",
+    address: "घर / खेत का पता",
+    address_placeholder: "मकान नं, गली या खेत का पता",
+    village: "गांव / कस्बा",
+    village_placeholder: "अपने गांव का नाम दर्ज करें",
+    taluka: "तहसील / तालुका",
+    taluka_placeholder: "तहसील",
+    district: "ज़िला",
+    district_placeholder: "ज़िला",
+    pincode: "पिन कोड",
+    delivery_notes: "डिलीवरी निर्देश",
+    delivery_notes_placeholder: "उदा. सुबह १० से २ बजे के बीच लाएं",
+    payment_method: "भुगतान का तरीका चुनें",
+    cod_label: "कैश ऑन डिलीवरी (सामान मिलने पर नकद दें)",
+    upi_label: "फ़ोनपे / गूगल पे / UPI QR स्कैन (तुरंत भुगतान)",
+    place_order_btn: "ऑर्डर कन्फर्म करें और व्हाट्सएप पर भेजें",
+    order_success_title: "बधाई हो! आपका ऑर्डर दर्ज हो गया है",
+    order_success_subtitle: "आपके ऑर्डर की पूरी जानकारी दुकान मालिक को व्हाट्सएप पर भेजी जा रही है...",
+    redirecting_whatsapp: "कुछ ही पलों में व्हाट्सएप खुल रहा है...",
+    click_if_not_redirected: "यदि व्हाट्सएप अपने आप न खुले तो यहाँ क्लिक करें",
+    order_number: "ऑर्डर संख्या",
+    print_receipt: "रसीद प्रिंट / डाउनलोड करें",
+    track_your_order: "ऑर्डर स्थिति देखें",
+    order_status: "ऑर्डर स्थिति",
+    status_pending: "प्रतीक्षारत (Pending)",
+    status_confirmed: "पुष्टि की गई (Confirmed)",
+    status_shipped: "भेज दिया गया (Shipped)",
+    status_delivered: "डिलीवर हो गया (Delivered)",
+    status_cancelled: "रद्द (Cancelled)",
+    filter_by: "फ़िल्टर करें",
+    sort_by: "क्रमबद्ध करें",
+    sort_popular: "सबसे लोकप्रिय",
+    sort_low_high: "कीमत: कम से अधिक",
+    sort_high_low: "कीमत: अधिक से कम",
+    sort_rating: "सर्वोत्तम रेटिंग",
+    empty_cart: "आपकी कार्ट खाली है",
+    start_shopping: "खरीदारी शुरू करें",
+    contact_owner_banner: "किसी भी प्रश्न या सहायता के लिए मालिक से तुरंत संपर्क करें:",
+    owner_name_label: "शिवार कृषि सेवा केंद्र (मालिक)",
+    footer_text: "© २०२६ शिवार एग्रो मार्ट। सर्वाधिकार सुरक्षित। किसान की प्रगति, हमारा संकल्प।",
+    scan_to_pay: "स्कैन करके भुगतान करें",
+    upi_instructions: "किसी भी UPI ऐप (PhonePe/GPay/Paytm) से यह QR स्कैन करें।"
+  },
+
+  en: {
+    brand_name: "Shivar Agri Mart",
+    tagline: "Farmer's Trusted Online Agricultural Marketplace",
+    home: "Home",
+    products: "All Products",
+    categories: "Categories",
+    track_order: "Track Order",
+    admin_login: "Owner Login",
+    admin_dashboard: "Admin Dashboard",
+    cart: "Shopping Cart",
+    call_owner: "Call Owner",
+    whatsapp_owner: "WhatsApp Contact",
+    search_placeholder: "Search seeds, fertilizers, pesticides, tools...",
+    all_categories: "All Categories",
+    seeds: "Seeds",
+    fertilizers: "Fertilizers",
+    pesticides: "Crop Protection",
+    equipment: "Tools & Equipment",
+    irrigation: "Irrigation Systems",
+    organic: "Organic Farming",
+    hero_title: "Premium Seeds, Fertilizers & Equipment Delivered To Your Farm!",
+    hero_subtitle: "Get company certified agricultural inputs from Shivar Krushi Seva Kendra. Order online or directly connect with the owner.",
+    order_now: "Order Now",
+    add_to_cart: "Add to Cart",
+    view_details: "View Details",
+    popular_products: "Popular Farm Products",
+    special_offers: "Special Discounts & Offers",
+    why_choose_us: "Why Choose Shivar?",
+    feature_1_title: "100% Genuine Products",
+    feature_1_desc: "Company certified seeds, fertilizers & crop chemicals.",
+    feature_2_title: "Fast Farm Delivery",
+    feature_2_desc: "Safe & reliable delivery directly to your village or farm.",
+    feature_3_title: "Direct Owner Advisory",
+    feature_3_desc: "Talk directly to the store owner on 9021273002.",
+    feature_4_title: "Cash on Delivery (COD)",
+    feature_4_desc: "Inspect products first and pay upon delivery.",
+    price: "Price",
+    in_stock: "In Stock",
+    out_of_stock: "Out of Stock",
+    stock_left: "Units left",
+    quantity: "Quantity",
+    total: "Total",
+    subtotal: "Subtotal",
+    delivery_fee: "Delivery Fee",
+    free_delivery: "Free Delivery (Orders above ₹1000)",
+    grand_total: "Grand Total",
+    checkout: "Complete Order",
+    farmer_details: "Farmer & Delivery Details",
+    full_name: "Full Name",
+    full_name_placeholder: "e.g. Ramesh Patil",
+    phone_number: "Mobile / WhatsApp Number",
+    phone_placeholder: "10-digit mobile number",
+    email_optional: "Email (Optional)",
+    address: "House / Farm Address",
+    address_placeholder: "House no., street or farm landmark",
+    village: "Village / Town",
+    village_placeholder: "Enter village name",
+    taluka: "Taluka / Tehsil",
+    taluka_placeholder: "Taluka",
+    district: "District",
+    district_placeholder: "District",
+    pincode: "Pincode",
+    delivery_notes: "Delivery Notes / Landmark",
+    delivery_notes_placeholder: "e.g. Deliver between 10 AM to 2 PM",
+    payment_method: "Select Payment Method",
+    cod_label: "Cash on Delivery (COD - Pay cash at farm)",
+    upi_label: "PhonePe / Google Pay / UPI QR (Instant 0% fee)",
+    place_order_btn: "Confirm Order & Send to WhatsApp",
+    order_success_title: "Congratulations! Your Order has been Placed",
+    order_success_subtitle: "Your order details are being forwarded to the store owner on WhatsApp...",
+    redirecting_whatsapp: "Redirecting to WhatsApp in a few seconds...",
+    click_if_not_redirected: "Click here if WhatsApp doesn't open automatically",
+    order_number: "Order Number",
+    print_receipt: "Print / Save Receipt",
+    track_your_order: "Track Order Status",
+    order_status: "Order Status",
+    status_pending: "Pending",
+    status_confirmed: "Confirmed",
+    status_shipped: "Shipped",
+    status_delivered: "Delivered",
+    status_cancelled: "Cancelled",
+    filter_by: "Filter By",
+    sort_by: "Sort By",
+    sort_popular: "Most Popular",
+    sort_low_high: "Price: Low to High",
+    sort_high_low: "Price: High to Low",
+    sort_rating: "Top Rated",
+    empty_cart: "Your shopping cart is empty",
+    start_shopping: "Start Shopping",
+    contact_owner_banner: "Have questions or need farming advice? Reach out directly:",
+    owner_name_label: "Shivar Krushi Seva Kendra (Owner)",
+    footer_text: "© 2026 Shivar Agro Mart. All rights reserved. Empowering farmers.",
+    scan_to_pay: "Scan to Pay via UPI",
+    upi_instructions: "Scan this QR code with PhonePe, Google Pay, or Paytm."
+  }
+};
+
+// Current active language helper
+function getLang() {
+  return localStorage.getItem("shivar_lang") || "mr";
+}
+
+function setLang(lang) {
+  if (translations[lang]) {
+    localStorage.setItem("shivar_lang", lang);
+    applyLanguage(lang);
+    if (window.onLanguageChange) {
+      window.onLanguageChange(lang);
+    }
+  }
+}
+
+function t(key) {
+  const lang = getLang();
+  return (translations[lang] && translations[lang][key]) || (translations.en && translations.en[key]) || key;
+}
+
+function applyLanguage(lang) {
+  const dict = translations[lang] || translations.mr;
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (dict[key]) {
+      if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+        el.placeholder = dict[key];
+      } else {
+        el.innerText = dict[key];
+      }
+    }
+  });
+
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+    const key = el.getAttribute("data-i18n-placeholder");
+    if (dict[key]) {
+      el.placeholder = dict[key];
+    }
+  });
+
+  // Update active state in language buttons
+  document.querySelectorAll(".lang-btn").forEach(btn => {
+    if (btn.getAttribute("data-lang") === lang) {
+      btn.classList.add("bg-emerald-700", "text-white");
+      btn.classList.remove("text-emerald-900", "bg-emerald-50", "hover:bg-emerald-100");
+    } else {
+      btn.classList.remove("bg-emerald-700", "text-white");
+      btn.classList.add("text-emerald-900", "bg-emerald-50", "hover:bg-emerald-100");
+    }
+  });
+}

@@ -1,0 +1,347 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="py-8 bg-slate-50 min-h-screen">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- Title -->
+    <div class="mb-8 text-center sm:text-left">
+      <div class="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-emerald-700 mb-1">
+        <i class="fas fa-shield-alt text-yellow-500"></i>
+        <span>सुरक्षित खरेदी व थेट मालक संपर्क</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-black text-slate-900" data-i18n="checkout">
+        ऑर्डर व डिलिव्हरी माहिती (Checkout)
+      </h1>
+      <p class="text-xs text-slate-500 mt-1">कृपया तुमचा पत्ता आणि मोबाईल नंबर अचूक भरा म्हणजे माल वेळेत पोहोचेल.</p>
+    </div>
+
+    <!-- Order Grid: Left Form, Right Summary -->
+    <form id="order-form" onsubmit="handlePlaceOrder(event)" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Left Column: Farmer Address & Payment Method -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Farmer Details Box -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-5">
+          <div class="flex items-center space-x-3 pb-3 border-b border-slate-100">
+            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+              <i class="fas fa-user-check text-lg"></i>
+            </div>
+            <h2 class="font-bold text-slate-900 text-base" data-i18n="farmer_details">शेतकऱ्याची माहिती व पत्ता</h2>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Full Name -->
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" data-i18n="full_name">पूर्ण नाव *</label>
+              <input type="text" id="cust-name" required placeholder="उदा. रमेश ज्ञानोबा पाटील" data-i18n-placeholder="full_name_placeholder" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm font-medium">
+            </div>
+
+            <!-- Phone Number -->
+            <div class="sm:col-span-1">
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" data-i18n="phone_number">मोबाईल / व्हॉट्सअ‍ॅप नंबर *</label>
+              <div class="relative">
+                <span class="absolute left-3.5 top-3.5 text-xs font-bold text-slate-500">+91</span>
+                <input type="tel" id="cust-phone" required pattern="[0-9]{10}" placeholder="९०२१२७३००२" class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm font-bold font-mono">
+              </div>
+            </div>
+
+            <!-- Email (Optional) -->
+            <div class="sm:col-span-1">
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" data-i18n="email_optional">ईमेल (पर्यायी)</label>
+              <input type="email" id="cust-email" placeholder="farmer@gmail.com" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm font-medium">
+            </div>
+
+            <!-- Address Line / Farm Location -->
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" data-i18n="address">घर / शेताचा पत्ता व लँडमार्क *</label>
+              <input type="text" id="cust-address" required placeholder="घर क्र, गल्ली किंवा मळ्याचा पत्ता" data-i18n-placeholder="address_placeholder" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm font-medium">
+            </div>
+
+            <!-- Village -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" data-i18n="village">गाव / शहर *</label>
+              <input type="text" id="cust-village" required placeholder="गावाचे नाव" data-i18n-placeholder="village_placeholder" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm font-medium">
+            </div>
+
+            <!-- Taluka -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" data-i18n="taluka">तालुका *</label>
+              <input type="text" id="cust-taluka" required placeholder="तालुका" data-i18n-placeholder="taluka_placeholder" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm font-medium">
+            </div>
+
+            <!-- District -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" data-i18n="district">जिल्हा *</label>
+              <input type="text" id="cust-district" required placeholder="जिल्हा" data-i18n-placeholder="district_placeholder" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm font-medium">
+            </div>
+
+            <!-- Pincode -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" data-i18n="pincode">पिनकोड *</label>
+              <input type="text" id="cust-pincode" required pattern="[0-9]{6}" placeholder="411001" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm font-bold font-mono">
+            </div>
+
+            <!-- Notes -->
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" data-i18n="delivery_notes">डिलिव्हरीसाठी विशेष सूचना</label>
+              <textarea id="cust-notes" rows="2" placeholder="उदा. सकाळी १० नंतर आणणे किंवा सोसायटी गेटवर फोन करणे" data-i18n-placeholder="delivery_notes_placeholder" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm font-medium"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Method Box -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-4">
+          <div class="flex items-center space-x-3 pb-3 border-b border-slate-100">
+            <div class="w-10 h-10 rounded-xl bg-yellow-100 text-yellow-800 flex items-center justify-center font-bold">
+              <i class="fas fa-credit-card text-lg"></i>
+            </div>
+            <h2 class="font-bold text-slate-900 text-base" data-i18n="payment_method">पेमेंट पद्धत निवडा</h2>
+          </div>
+
+          <div class="space-y-3">
+            <!-- COD Option -->
+            <label class="flex items-center p-4 rounded-2xl border-2 border-emerald-600 bg-emerald-50/50 cursor-pointer transition">
+              <input type="radio" name="payment_method" value="COD" checked onchange="togglePaymentView('COD')" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500">
+              <div class="ml-3.5 flex-1">
+                <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                  <i class="fas fa-hand-holding-usd text-emerald-700"></i>
+                  <span data-i18n="cod_label">कॅश ऑन डिलिव्हरी (COD - माल आल्यावर रोख)</span>
+                </div>
+                <div class="text-xs text-slate-500 mt-0.5">सामान शेतावर पोहोचल्यावर खात्री करूनच पैसे द्या.</div>
+              </div>
+            </label>
+
+            <!-- UPI Option -->
+            <label class="flex items-center p-4 rounded-2xl border border-slate-200 hover:border-emerald-500 bg-white cursor-pointer transition">
+              <input type="radio" name="payment_method" value="UPI_QR" onchange="togglePaymentView('UPI_QR')" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500">
+              <div class="ml-3.5 flex-1">
+                <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                  <i class="fas fa-qrcode text-emerald-700"></i>
+                  <span data-i18n="upi_label">फोनपे / गुगल पे / UPI QR स्कॅन (झटपट पेमेंट)</span>
+                </div>
+                <div class="text-xs text-slate-500 mt-0.5">कोणत्याही UPI अ‍ॅपवरून 0% अतिरिक्त शुल्कासह थेट खात्यात पाठवा.</div>
+              </div>
+            </label>
+          </div>
+
+          <!-- Dynamic UPI QR Scanner Box (Shown if UPI selected) -->
+          <div id="upi-qr-box" class="hidden p-5 bg-slate-50 rounded-2xl border border-slate-200 text-center space-y-3">
+            <div class="text-xs font-bold text-emerald-800" data-i18n="scan_to_pay">स्कॅन करून पेमेंट करा:</div>
+            <div class="w-44 h-44 mx-auto bg-white p-2 rounded-xl shadow-md border flex items-center justify-center">
+              <img id="upi-qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa={{ owner_phone }}@ybl&pn=ShivarKrushi&cu=INR" alt="UPI QR Code" class="w-full h-full object-contain">
+            </div>
+            <div class="text-xs text-slate-600">
+              UPI ID: <span class="font-mono font-bold text-slate-800">{{ owner_phone }}@ybl</span> (शिवार कृषी केंद्र)
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Order Items Summary & Confirmation -->
+      <div class="lg:col-span-5 space-y-6">
+        
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-5 sticky top-24">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <h3 class="font-bold text-slate-900 text-base" data-i18n="cart">ऑर्डर साहित्य (Order Items)</h3>
+            <span id="order-items-count-badge" class="text-xs font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full">० वस्तू</span>
+          </div>
+
+          <!-- Items list container -->
+          <div id="checkout-items-list" class="space-y-3 max-h-72 overflow-y-auto pr-1">
+            <!-- Injected via loadCheckoutItems -->
+          </div>
+
+          <!-- Price Calculation -->
+          <div class="pt-4 border-t border-slate-200 space-y-2 text-sm">
+            <div class="flex justify-between text-slate-600">
+              <span data-i18n="subtotal">उपएकूण:</span>
+              <span id="calc-subtotal" class="font-bold text-slate-900">₹0</span>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span data-i18n="delivery_fee">डिलिव्हरी शुल्क:</span>
+              <span id="calc-delivery" class="font-bold text-emerald-700">मोफत</span>
+            </div>
+            <div class="flex justify-between items-baseline pt-2 border-t border-slate-100">
+              <span class="font-black text-slate-900 text-base" data-i18n="grand_total">एकूण देय रक्कम:</span>
+              <span id="calc-grand-total" class="font-black text-2xl text-emerald-900">₹0</span>
+            </div>
+          </div>
+
+          <!-- Place Order Button -->
+          <button type="submit" id="submit-order-btn" class="w-full py-4 bg-yellow-400 hover:bg-yellow-300 text-emerald-950 font-black rounded-2xl shadow-xl shadow-yellow-400/25 transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-base">
+            <i class="fas fa-check-circle text-lg"></i>
+            <span data-i18n="place_order_btn">ऑर्डर निश्चित करा व व्हॉट्सअ‍ॅपवर पाठवा</span>
+          </button>
+
+          <!-- Owner Contact Assurance -->
+          <div class="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200/60 text-xs text-emerald-900 space-y-1">
+            <div class="font-bold flex items-center gap-1.5">
+              <i class="fas fa-info-circle text-emerald-600"></i>
+              <span>ऑर्डरनंतर काय होईल?</span>
+            </div>
+            <p class="text-slate-600 text-[11px] leading-relaxed">
+              ऑर्डर सबमिट करताच तुमची संपूर्ण माहिती आपोआप दुकान मालकाच्या व्हॉट्सअ‍ॅपवर ({{ owner_phone }}) पाठवली जाईल आणि तुम्हाला ट्रॅकिंग क्रमांक मिळेल.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let orderItems = [];
+
+async function initCheckout() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const singleProductId = urlParams.get("product_id");
+  const singleQty = parseInt(urlParams.get("quantity")) || 1;
+
+  if (singleProductId) {
+    // Single product "Order Now" direct flow
+    try {
+      const res = await fetch(`/api/products/${singleProductId}?lang=${getLang()}`);
+      if (res.ok) {
+        const p = await res.json();
+        orderItems = [{
+          product_id: p.id,
+          product_name: p.name,
+          price: p.price,
+          quantity: singleQty,
+          unit: p.unit,
+          image_url: p.image_url
+        }];
+      }
+    } catch (e) {
+      console.error("Failed to load direct product", e);
+    }
+  } else {
+    // Take items from Cart
+    orderItems = Cart.items.map(i => ({
+      product_id: i.id,
+      product_name: i[`name_${getLang()}`] || i.name || i.name_en,
+      price: i.price,
+      quantity: i.quantity,
+      unit: i.unit,
+      image_url: i.image_url
+    }));
+  }
+
+  if (orderItems.length === 0) {
+    alert("तुमच्या टोपलीत कोणतेही उत्पादन नाही. कृपया प्रथम उत्पादन निवडा.");
+    window.location.href = "/#catalog-section";
+    return;
+  }
+
+  renderCheckoutItems();
+}
+
+function renderCheckoutItems() {
+  const container = document.getElementById("checkout-items-list");
+  const countBadge = document.getElementById("order-items-count-badge");
+  
+  countBadge.innerText = `${orderItems.length} वस्तू`;
+
+  let subtotal = 0;
+  container.innerHTML = orderItems.map((item, idx) => {
+    const itemTotal = item.price * item.quantity;
+    subtotal += itemTotal;
+    return `
+      <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+        <img src="${item.image_url}" class="w-12 h-12 object-cover rounded-lg border" alt="${item.product_name}">
+        <div class="flex-1 ml-3">
+          <div class="font-bold text-xs text-slate-800 line-clamp-1">${item.product_name}</div>
+          <div class="text-[11px] text-slate-500">₹${item.price} x ${item.quantity} ${item.unit}</div>
+        </div>
+        <div class="font-bold text-sm text-emerald-900">
+          ₹${itemTotal}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const deliveryFee = subtotal >= 1000 ? 0 : 50;
+  const grandTotal = subtotal + deliveryFee;
+
+  document.getElementById("calc-subtotal").innerText = `₹${subtotal}`;
+  document.getElementById("calc-delivery").innerText = deliveryFee === 0 ? "मोफत (Free)" : `₹${deliveryFee}`;
+  document.getElementById("calc-grand-total").innerText = `₹${grandTotal}`;
+}
+
+function togglePaymentView(method) {
+  const qrBox = document.getElementById("upi-qr-box");
+  if (method === "UPI_QR") {
+    qrBox.classList.remove("hidden");
+  } else {
+    qrBox.classList.add("hidden");
+  }
+}
+
+async function handlePlaceOrder(event) {
+  event.preventDefault();
+  const btn = document.getElementById("submit-order-btn");
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> ऑर्डर प्रक्रिया सुरू आहे...`;
+
+  const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+
+  const payload = {
+    customer_name: document.getElementById("cust-name").value.trim(),
+    customer_phone: document.getElementById("cust-phone").value.trim(),
+    customer_email: document.getElementById("cust-email").value.trim() || null,
+    address_line: document.getElementById("cust-address").value.trim(),
+    village: document.getElementById("cust-village").value.trim(),
+    taluka: document.getElementById("cust-taluka").value.trim(),
+    district: document.getElementById("cust-district").value.trim(),
+    state: "Maharashtra",
+    pincode: document.getElementById("cust-pincode").value.trim(),
+    delivery_notes: document.getElementById("cust-notes").value.trim() || null,
+    payment_method: selectedPaymentMethod,
+    items: orderItems.map(i => ({
+      product_id: i.product_id,
+      product_name: i.product_name,
+      price: i.price,
+      quantity: i.quantity,
+      unit: i.unit
+    })),
+    preferred_language: getLang()
+  };
+
+  try {
+    const res = await fetch("/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || "Order submission failed");
+
+    // Clear cart
+    Cart.clear();
+
+    // Redirect to Order Success & WhatsApp redirect screen
+    const successUrl = `/order/success?order_number=${encodeURIComponent(data.order_number)}&whatsapp_url=${encodeURIComponent(data.whatsapp_url)}&total=${data.grand_total}`;
+    window.location.href = successUrl;
+
+  } catch (e) {
+    alert(`ऑर्डर नोंदवताना त्रुटी आली: ${e.message}`);
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fas fa-check-circle mr-2"></i> पुन्हा प्रयत्न करा`;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initCheckout();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="py-10 bg-slate-50 min-h-screen">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase mb-2">
+        <i class="fas fa-truck-fast"></i>
+        <span data-i18n="track_order">थेट ऑर्डर ट्रॅकिंग</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-black text-slate-900" data-i18n="track_your_order">
+        तुमच्या ऑर्डरची सद्यस्थिती तपासा
+      </h1>
+      <p class="text-xs text-slate-500 mt-1">ऑर्डर क्रमांक किंवा तुमचा १० अंकी मोबाईल नंबर टाकून शोधा.</p>
+    </div>
+
+    <!-- Search Form Card -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm max-w-xl mx-auto mb-8">
+      <form onsubmit="handleTrack(event)" class="space-y-4">
+        <div class="relative">
+          <input type="text" id="track-input" required placeholder="ऑर्डर क्र. (उदा. SHV-2608-...) किंवा मोबाईल नंबर" class="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm font-semibold">
+          <i class="fas fa-search absolute left-4 top-4 text-slate-400 text-base"></i>
+        </div>
+
+        <button type="submit" id="track-btn" class="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-2xl shadow-lg shadow-emerald-700/25 transition flex items-center justify-center gap-2 text-sm">
+          <i class="fas fa-satellite-dish"></i>
+          <span>स्थिती शोधा (Track Status)</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Tracking Result Box (Hidden by default) -->
+    <div id="track-result-card" class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-lg hidden space-y-8">
+      
+      <!-- Top Order Info -->
+      <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-100">
+        <div>
+          <span class="text-xs font-bold text-slate-400 uppercase" data-i18n="order_number">ऑर्डर क्रमांक</span>
+          <h2 id="result-order-num" class="text-xl font-black font-mono text-emerald-900">#SHV-2026</h2>
+          <div id="result-order-date" class="text-xs text-slate-500 mt-0.5">--</div>
+        </div>
+
+        <div class="text-right">
+          <span class="text-xs font-bold text-slate-400 uppercase" data-i18n="order_status">सद्यस्थिती</span>
+          <div>
+            <span id="result-status-badge" class="inline-block px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
+              प्रलंबित
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Progress Timeline -->
+      <div class="relative py-4">
+        <div class="grid grid-cols-4 text-center relative z-10 gap-2">
+          
+          <!-- Step 1: Placed -->
+          <div class="timeline-step flex flex-col items-center" id="step-placed">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-bold text-base shadow-md mb-2">
+              <i class="fas fa-file-invoice"></i>
+            </div>
+            <div class="text-xs font-bold text-slate-800">ऑर्डर नोंदवली</div>
+            <div class="text-[10px] text-slate-400">Placed</div>
+          </div>
+
+          <!-- Step 2: Confirmed -->
+          <div class="timeline-step flex flex-col items-center opacity-40" id="step-confirmed">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-base shadow-sm mb-2 step-circle">
+              <i class="fas fa-clipboard-check"></i>
+            </div>
+            <div class="text-xs font-bold text-slate-800">स्वीकृत</div>
+            <div class="text-[10px] text-slate-400">Confirmed</div>
+          </div>
+
+          <!-- Step 3: Shipped -->
+          <div class="timeline-step flex flex-col items-center opacity-40" id="step-shipped">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-base shadow-sm mb-2 step-circle">
+              <i class="fas fa-truck-moving"></i>
+            </div>
+            <div class="text-xs font-bold text-slate-800">मार्गावर</div>
+            <div class="text-[10px] text-slate-400">Shipped</div>
+          </div>
+
+          <!-- Step 4: Delivered -->
+          <div class="timeline-step flex flex-col items-center opacity-40" id="step-delivered">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-base shadow-sm mb-2 step-circle">
+              <i class="fas fa-seedling"></i>
+            </div>
+            <div class="text-xs font-bold text-slate-800">पोहोचले</div>
+            <div class="text-[10px] text-slate-400">Delivered</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Customer and Items Summary -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100 text-xs">
+        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
+          <div class="font-bold text-slate-800 mb-1" data-i18n="farmer_details">शेतकरी व पत्ता:</div>
+          <div id="result-customer-name" class="font-semibold text-slate-700">--</div>
+          <div id="result-customer-phone" class="font-mono text-emerald-800">--</div>
+          <div id="result-customer-address" class="text-slate-500 leading-relaxed">--</div>
+        </div>
+
+        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
+          <div class="font-bold text-slate-800 mb-1" data-i18n="cart">साहित्य तपशील:</div>
+          <div id="result-items-list" class="space-y-1"></div>
+          <div class="pt-2 border-t border-slate-200 flex justify-between font-black text-sm text-emerald-950">
+            <span>एकूण रक्कम:</span>
+            <span id="result-grand-total">₹0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Direct Assistance & Bill View -->
+      <div class="flex flex-wrap items-center justify-between gap-3 p-4 bg-emerald-50 rounded-2xl border border-emerald-200 text-xs">
+        <div class="flex items-center gap-2">
+          <i class="fab fa-whatsapp text-2xl text-emerald-600"></i>
+          <div>
+            <div class="font-bold text-emerald-900">डिलिव्हरी व बिलिंग अपडेट:</div>
+            <div class="text-slate-500 text-[11px]">थेट मालकाशी ९०२१२७३००२ वर चॅट करा किंवा अधिकृत पावती डाउनलोड करा.</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <a id="result-invoice-link" href="#" target="_blank" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition flex items-center gap-1.5 shadow-sm">
+            <i class="fas fa-file-invoice"></i> बिल / पावती पहा
+          </a>
+          <a id="result-wa-link" href="#" target="_blank" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition flex items-center gap-1.5 shadow-sm">
+            <i class="fab fa-whatsapp"></i> व्हॉट्सअ‍ॅपवर विचारा
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+async function handleTrack(event) {
+  if (event) event.preventDefault();
+  const input = document.getElementById("track-input").value.trim();
+  if (!input) return;
+
+  const btn = document.getElementById("track-btn");
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> शोधत आहे...`;
+
+  try {
+    const res = await fetch(`/api/orders/track/${encodeURIComponent(input)}`);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || "ऑर्डर आढळली नाही.");
+
+    renderTrackResult(data);
+  } catch (e) {
+    alert(e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fas fa-satellite-dish mr-2"></i> स्थिती शोधा`;
+  }
+}
+
+function renderTrackResult(data) {
+  const card = document.getElementById("track-result-card");
+  card.classList.remove("hidden");
+
+  document.getElementById("result-order-num").innerText = `#${data.order_number}`;
+  document.getElementById("result-order-date").innerText = `नोंदणी तारीख: ${data.created_at}`;
+  document.getElementById("result-status-badge").innerText = data.order_status;
+  document.getElementById("result-customer-name").innerText = data.customer_name;
+  document.getElementById("result-customer-phone").innerText = data.customer_phone;
+  document.getElementById("result-customer-address").innerText = data.address;
+  document.getElementById("result-grand-total").innerText = `₹${data.grand_total}`;
+
+  // WhatsApp & Invoice Links
+  document.getElementById("result-invoice-link").href = `/invoice/${data.order_number}`;
+  const waMsg = encodeURIComponent(`नमस्कार, मला माझी ऑर्डर #${data.order_number} बद्दल विचारणा करायची आहे.`);
+  document.getElementById("result-wa-link").href = `https://wa.me/91{{ owner_whatsapp }}?text=${waMsg}`;
+
+  // Render items
+  document.getElementById("result-items-list").innerHTML = data.items.map(i => `
+    <div class="flex justify-between text-slate-600">
+      <span>• ${i.product_name} (${i.quantity} ${i.unit})</span>
+      <span class="font-bold">₹${i.subtotal}</span>
+    </div>
+  `).join('');
+
+  // Update Timeline steps
+  const steps = ["Placed", "Confirmed", "Shipped", "Delivered"];
+  const status = data.order_status;
+
+  const stepElements = {
+    Placed: document.getElementById("step-placed"),
+    Confirmed: document.getElementById("step-confirmed"),
+    Shipped: document.getElementById("step-shipped"),
+    Delivered: document.getElementById("step-delivered")
+  };
+
+  // Reset styles
+  Object.values(stepElements).forEach(el => {
+    el.classList.add("opacity-40");
+    const circle = el.querySelector(".step-circle");
+    if (circle) {
+      circle.classList.remove("bg-emerald-600", "text-white");
+      circle.classList.add("bg-slate-200", "text-slate-600");
+    }
+  });
+
+  stepElements.Placed.classList.remove("opacity-40");
+
+  if (status === "Confirmed" || status === "Shipped" || status === "Delivered") {
+    stepElements.Confirmed.classList.remove("opacity-40");
+    const circle = stepElements.Confirmed.querySelector(".step-circle");
+    if (circle) { circle.classList.add("bg-emerald-600", "text-white"); circle.classList.remove("bg-slate-200"); }
+  }
+
+  if (status === "Shipped" || status === "Delivered") {
+    stepElements.Shipped.classList.remove("opacity-40");
+    const circle = stepElements.Shipped.querySelector(".step-circle");
+    if (circle) { circle.classList.add("bg-emerald-600", "text-white"); circle.classList.remove("bg-slate-200"); }
+  }
+
+  if (status === "Delivered") {
+    stepElements.Delivered.classList.remove("opacity-40");
+    const circle = stepElements.Delivered.querySelector(".step-circle");
+    if (circle) { circle.classList.add("bg-emerald-600", "text-white"); circle.classList.remove("bg-slate-200"); }
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const orderId = urlParams.get("id");
+  if (orderId) {
+    document.getElementById("track-input").value = orderId;
+    handleTrack(null);
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  shivar-web:
+    build: .
+    container_name: shivar_app
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - HOST=0.0.0.0
+      - OWNER_NAME=Shivar Krushi Seva Kendra
+      - OWNER_PHONE=9021273002
+      - OWNER_WHATSAPP=9021273002
+      - ADMIN_USERNAME=admin@shivar.com
+      - ADMIN_PASSWORD=shivar@2026
+      - DATABASE_URL=sqlite:///./shivar.db
+    volumes:
+      - ./shivar.db:/app/shivar.db

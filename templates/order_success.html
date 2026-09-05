@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="py-12 bg-slate-50 min-h-screen flex items-center justify-center">
+  <div class="max-w-xl w-full mx-4">
+    
+    <div class="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200 shadow-xl text-center space-y-6 relative overflow-hidden">
+      
+      <!-- Top Decorative Accent -->
+      <div class="absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-emerald-600 via-yellow-400 to-emerald-600"></div>
+
+      <!-- Success Icon -->
+      <div class="w-20 h-20 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto shadow-inner text-3xl">
+        <i class="fas fa-check-circle animate-bounce"></i>
+      </div>
+
+      <!-- Header -->
+      <div class="space-y-1.5">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900" data-i18n="order_success_title">
+          अभिनंदन! तुमची ऑर्डर नोंदवली गेली आहे!
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-600" data-i18n="order_success_subtitle">
+          तुमच्या ऑर्डरची संपूर्ण माहिती दुकान मालकाला थेट व्हॉट्सअ‍ॅपवर पाठवली जात आहे...
+        </p>
+      </div>
+
+      <!-- Order ID Badge -->
+      <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-200/80 inline-block w-full max-w-sm">
+        <div class="text-[11px] font-bold text-emerald-800 uppercase" data-i18n="order_number">ऑर्डर क्रमांक:</div>
+        <div id="display-order-number" class="text-xl font-mono font-black text-emerald-950 tracking-wider">#SHV-2026</div>
+      </div>
+
+      <!-- WhatsApp Auto Redirect Countdown Box -->
+      <div class="p-5 bg-gradient-to-br from-emerald-800 to-teal-900 rounded-2xl text-white space-y-3 shadow-lg shadow-emerald-900/20">
+        <div class="flex items-center justify-center space-x-2 text-yellow-300 font-bold text-sm">
+          <i class="fab fa-whatsapp text-2xl text-emerald-400"></i>
+          <span data-i18n="redirecting_whatsapp">काही क्षणांत व्हॉट्सअ‍ॅप उघडत आहे...</span>
+        </div>
+        <div class="text-3xl font-black font-mono text-yellow-400" id="countdown-timer">3</div>
+        <p class="text-[11px] text-emerald-200">
+          दुकानदार श्री. {{ owner_name }} ({{ owner_phone }}) यांच्याशी थेट व्हॉट्सअ‍ॅप चॅट सुरू होत आहे.
+        </p>
+      </div>
+
+      <!-- Direct Buttons -->
+      <div class="space-y-3 pt-2">
+        <a id="manual-whatsapp-btn" href="#" target="_blank" class="w-full py-4 bg-[#25D366] hover:bg-[#20ba59] text-white font-black rounded-2xl shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 text-base transition transform hover:-translate-y-0.5">
+          <i class="fab fa-whatsapp text-xl"></i>
+          <span>आत्ताच व्हॉट्सअ‍ॅप उघडा (Open WhatsApp)</span>
+        </a>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <a href="tel:{{ owner_phone }}" class="py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition">
+            <i class="fas fa-phone-alt text-emerald-700"></i>
+            <span>थेट कॉल करा ({{ owner_phone }})</span>
+          </a>
+
+          <a id="track-order-btn" href="/track" class="py-3 px-4 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition">
+            <i class="fas fa-truck-fast"></i>
+            <span data-i18n="track_your_order">ऑर्डर स्थिती तपासा</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-slate-100 text-center">
+        <a href="/" class="text-xs font-bold text-emerald-700 hover:underline">
+          <i class="fas fa-arrow-left mr-1"></i> मुख्यपृष्ठावर परत जा
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const orderNumber = urlParams.get("order_number") || "SHV-SUCCESS";
+  const whatsappUrl = urlParams.get("whatsapp_url") || `https://wa.me/91{{ owner_whatsapp }}`;
+
+  document.getElementById("display-order-number").innerText = `#${orderNumber}`;
+  document.getElementById("manual-whatsapp-btn").href = whatsappUrl;
+  document.getElementById("track-order-btn").href = `/track?id=${encodeURIComponent(orderNumber)}`;
+
+  // Auto redirect countdown (3 seconds)
+  let count = 3;
+  const timerEl = document.getElementById("countdown-timer");
+  const timer = setInterval(() => {
+    count--;
+    if (count > 0) {
+      timerEl.innerText = count;
+    } else {
+      clearInterval(timer);
+      timerEl.innerText = "उघडत आहे...";
+      window.location.href = whatsappUrl;
+    }
+  }, 1000);
+});
+</script>
+{% endblock %}

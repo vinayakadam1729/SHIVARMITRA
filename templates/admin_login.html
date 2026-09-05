@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="py-14 bg-slate-100 min-h-screen flex items-center justify-center">
+  <div class="max-w-md w-full mx-4">
+    
+    <div class="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200 shadow-xl space-y-6">
+      
+      <div class="text-center space-y-2">
+        <div class="w-20 h-20 rounded-2xl bg-white p-2 border border-emerald-200 flex items-center justify-center mx-auto shadow-md">
+          <img src="/static/images/logo.jpg" alt="Shivar Logo" class="w-16 h-16 object-contain rounded-xl">
+        </div>
+        <h1 class="text-2xl font-black text-slate-900" data-i18n="admin_login">
+          दुकानदार / मालक लॉगिन
+        </h1>
+        <p class="text-xs text-slate-500">
+          शिवार कृषी बाजार व्यवस्थापन व इन्व्हेंटरी कंट्रोल
+        </p>
+      </div>
+
+      <form id="admin-login-form" onsubmit="handleAdminLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">युझरनेम / ईमेल</label>
+          <div class="relative">
+            <input type="text" id="admin-user" required class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm font-semibold">
+            <i class="fas fa-user absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">पासवर्ड</label>
+          <div class="relative">
+            <input type="password" id="admin-pass" required class="w-full pl-10 pr-10 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm font-semibold">
+            <i class="fas fa-lock absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+            <button type="button" onclick="togglePasswordVisibility('admin-pass', this)" class="absolute right-3.5 top-3.5 text-slate-400 hover:text-emerald-700 focus:outline-none transition">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="admin-login-btn" class="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl shadow-lg shadow-emerald-700/25 transition text-sm flex items-center justify-center gap-2">
+          <i class="fas fa-sign-in-alt"></i>
+          <span>लॉगिन करा (Login to Dashboard)</span>
+        </button>
+      </form>
+
+      <div class="text-center pt-2">
+        <a href="/" class="text-xs font-bold text-emerald-700 hover:underline">
+          <i class="fas fa-arrow-left mr-1"></i> मुख्यपृष्ठावर परत जा
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function togglePasswordVisibility(inputId, btnElement) {
+  const input = document.getElementById(inputId);
+  const icon = btnElement.querySelector('i');
+  if (input.type === "password") {
+    input.type = "text";
+    icon.classList.remove("fa-eye");
+    icon.classList.add("fa-eye-slash");
+  } else {
+    input.type = "password";
+    icon.classList.remove("fa-eye-slash");
+    icon.classList.add("fa-eye");
+  }
+}
+
+async function handleAdminLogin(event) {
+  event.preventDefault();
+  const btn = document.getElementById("admin-login-btn");
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> तपासत आहे...`;
+
+  const payload = {
+    username: document.getElementById("admin-user").value.trim(),
+    password: document.getElementById("admin-pass").value
+  };
+
+  try {
+    const res = await fetch("/api/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || "Login failed");
+
+    localStorage.setItem("shivar_admin_token", data.access_token);
+    showToast("यशस्वी लॉगिन! अ‍ॅडमिन पॅनेल उघडत आहे...", "success");
+    setTimeout(() => {
+      window.location.href = "/admin";
+    }, 500);
+
+  } catch (e) {
+    alert(`लॉगिन अयशस्वी: ${e.message}`);
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fas fa-sign-in-alt mr-2"></i> लॉगिन करा`;
+  }
+}
+</script>
+{% endblock %}
