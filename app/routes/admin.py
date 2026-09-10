@@ -7,7 +7,11 @@ from sqlalchemy import desc, func
 
 from app.database import get_db
 from app.models import AdminUser, Order, OrderItem, Product, Category
-from app.schemas import AdminLogin, AdminToken, OrderStatusUpdate, AdminProfileUpdate, AdminPasswordChange, OfflineSaleCreate
+from app.schemas import (
+    ProductCreate, ProductUpdate, ProductOut,
+    OrderOut, OrderStatusUpdate, AdminProfileUpdate, AdminPasswordChange, OfflineSaleCreate,
+    AdminLogin, AdminToken
+)
 from app.auth import verify_password, hash_password, create_access_token, get_current_admin
 from app.config import settings
 
@@ -25,7 +29,6 @@ def admin_login(creds: AdminLogin, response: Response, db: Session = Depends(get
         
     token = create_access_token(data={"sub": user.username, "name": user.full_name})
     
-    # Also set httpOnly cookie for web browser session convenience
     response.set_cookie(
         key="admin_token",
         value=token,

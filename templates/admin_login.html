@@ -22,7 +22,7 @@
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">युझरनेम / ईमेल</label>
           <div class="relative">
-            <input type="text" id="admin-user" required class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm font-semibold">
+            <input type="text" id="admin-user" required class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm font-semibold" placeholder="ईमेल टाका">
             <i class="fas fa-user absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
           </div>
         </div>
@@ -30,7 +30,7 @@
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">पासवर्ड</label>
           <div class="relative">
-            <input type="password" id="admin-pass" required class="w-full pl-10 pr-10 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm font-semibold">
+            <input type="password" id="admin-pass" required class="w-full pl-10 pr-10 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm font-semibold tracking-widest" placeholder="पासवर्ड टाका">
             <i class="fas fa-lock absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
             <button type="button" onclick="togglePasswordVisibility('admin-pass', this)" class="absolute right-3.5 top-3.5 text-slate-400 hover:text-emerald-700 focus:outline-none transition">
               <i class="fas fa-eye"></i>
@@ -40,7 +40,7 @@
 
         <button type="submit" id="admin-login-btn" class="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl shadow-lg shadow-emerald-700/25 transition text-sm flex items-center justify-center gap-2">
           <i class="fas fa-sign-in-alt"></i>
-          <span>लॉगिन करा (Login to Dashboard)</span>
+          <span>लॉगिन करा (Login)</span>
         </button>
       </form>
 
@@ -75,34 +75,33 @@ function togglePasswordVisibility(inputId, btnElement) {
 async function handleAdminLogin(event) {
   event.preventDefault();
   const btn = document.getElementById("admin-login-btn");
+  const user = document.getElementById("admin-user").value.trim();
+  const pass = document.getElementById("admin-pass").value;
+  
+  const originalText = btn.innerHTML;
+  btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> तपासत आहे...`;
   btn.disabled = true;
-  btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> तपासत आहे...`;
-
-  const payload = {
-    username: document.getElementById("admin-user").value.trim(),
-    password: document.getElementById("admin-pass").value
-  };
 
   try {
     const res = await fetch("/api/admin/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ username: user, password: pass })
     });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.detail || "Login failed");
-
-    localStorage.setItem("shivar_admin_token", data.access_token);
-    showToast("यशस्वी लॉगिन! अ‍ॅडमिन पॅनेल उघडत आहे...", "success");
-    setTimeout(() => {
-      window.location.href = "/admin";
-    }, 500);
-
-  } catch (e) {
-    alert(`लॉगिन अयशस्वी: ${e.message}`);
+    
+    if (res.ok) {
+      const data = await res.json();
+      localStorage.setItem("shivar_admin_token", data.access_token);
+      window.location.href = "/admin"; // redirect to dashboard
+    } else {
+      const data = await res.json();
+      alert("Error: " + (data.detail || "चुकीचा ईमेल किंवा पासवर्ड (Invalid credentials)"));
+    }
+  } catch (error) {
+    alert("Network error");
+  } finally {
+    btn.innerHTML = originalText;
     btn.disabled = false;
-    btn.innerHTML = `<i class="fas fa-sign-in-alt mr-2"></i> लॉगिन करा`;
   }
 }
 </script>
