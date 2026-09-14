@@ -279,8 +279,8 @@ function renderCheckoutItems() {
   document.getElementById("calc-delivery").innerText = deliveryFee === 0 ? "मोफत (Free)" : `₹${deliveryFee}`;
   document.getElementById("calc-grand-total").innerText = `₹${grandTotal}`;
 
-  // Update UPI QR Code and Link with dynamic amount
-  const upiLink = `upi://pay?pa=kadam.avk11@ylb&am=${grandTotal}&cu=INR`;
+  // Update UPI QR Code and Link with dynamic amount (strictly 2 decimal places for UPI standard)
+  const upiLink = `upi://pay?pa=kadam.avk11@ylb&am=${grandTotal.toFixed(2)}&cu=INR`;
   document.getElementById("upi-qr-image").src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
   document.getElementById("upi-pay-link").href = upiLink;
 }
