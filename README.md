@@ -171,3 +171,5 @@ When an order is submitted:
 
 Created for **Shivar Agricultural Marketplace (शिवार कृषी बाजारपेठ)**.  
 Empowering Indian agriculture through modern digital technology.
+#   S H I V A R M A R T  
+ 
